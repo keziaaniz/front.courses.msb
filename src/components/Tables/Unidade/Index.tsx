@@ -1,25 +1,15 @@
 import React, { useState, useRef, useCallback } from 'react';
-import styled from "styled-components";
 import * as yup from "yup";
 import { Form } from '@unform/web';
+import { Table } from 'reactstrap';
+
 import Field from '../../Fields/Field';
 import { useUnit } from '../../../hooks/unit';
 import { useRole } from '../../../hooks/funcao';
+
+import Modal from '../../Modal/Modal';
+import { Button, DelButton } from '../styles';
 import getValidationErrors from '../../../utils/getValidationErrors';
-
-const Button = styled.button`
-  color: #292cb1;
-  font-size: 1em;
-  margin: 1em;
-  padding: 0.25em 1em;
-  border: 2px solid #292cb1;
-  border-radius: 3px;
-`;
-
-const DelButton = styled(Button)`
-  color: #f42e0c;
-  border-color: #f42e0c;
-`;
 
 const TableUnit = () => {
   const { units, updateUnit, removeUnit } = useUnit();
@@ -33,13 +23,19 @@ const TableUnit = () => {
     console.log(units);
   }, [units]);
 
+  React.useEffect(() => {
+    console.log(roles);
+  }, [roles]);
+
   const handleSubmit = useCallback(
     async (data: any) => {
+      console.log(data);
       try {
         formRef.current?.setErrors({});
         const schema = yup.object().shape({
-          sigla: yup.string().required('Campo obrigatório').min(2, 'Mínino de 2 caracteres'),
+          initials: yup.string().required('Campo obrigatório').min(2, 'Mínino de 2 caracteres'),
           nome: yup.string().required('Campo obrigatório'),
+          funcao: yup.string().required('Campo obrigatório'),
         });
         await schema.validate(data, {
           abortEarly: false,
@@ -48,6 +44,7 @@ const TableUnit = () => {
         setIsUnitUpdate(null);
         setOpen(false);
       } catch (error) {
+        console.log(error);
         if (error instanceof yup.ValidationError) {
           const errors = getValidationErrors(error);
           formRef.current?.setErrors(errors);
@@ -59,69 +56,77 @@ const TableUnit = () => {
 
   return (
     <>
-      <table>
-        <tr className="table-primary">
-          <th scope="col">Id</th>
-          <th scope="col">Sigla</th>
-          <th scope="col">Unidade</th>
-          <th scope="col">Função</th>
-          <th scope="col">Ações</th>
-        </tr>
+      <Table
+        hover
+        responsive
+        striped
+      >
+        <thead className="table-primary">
+          <th>Id</th>
+          <th>Sigla</th>
+          <th>Unidade</th>
+          <th>Função</th>
+          <th>Ações</th>
+        </thead>
         <tbody>
           {units.map((item) => (
-            <tbody>
-              <td>
+            <tr className="table-light">
+              <th scope="row">
                 {item.id}
-              </td>
+              </th>
               <td>
                 {item.initials}
               </td>
               <td>
-                {item.unit}
+                {item.nome}
               </td>
               <td>
-                {item.role}
+                {item.funcao}
               </td>
               <td>
-                <Button onClick={() => { setIsUnitUpdate(item); }} type="button">Atualizar</Button>
+                <Button onClick={() => { setIsUnitUpdate(item); setOpen(true); }} type="button">Atualizar</Button>
                 <DelButton onClick={() => { removeUnit(item.id); }} type="button">Remover</DelButton>
               </td>
-            </tbody>
+            </tr>
           ))}
         </tbody>
-      </table>
-      <div style={{ margin: 'auto', width: '50%', marginTop: '10%' }}>
-        <button onClick={() => { setOpen(false); }}>Fechar</button>
-        <Form
-          ref={formRef}
-          onSubmit={handleSubmit}
-          initialData={isUnitUpdate}
-        >
-          <Field
-            id="inittials"
-            editor="textbox"
-            name="inittials"
-            placeholder="escreva a sigla"
-            type="text"
-          />
-          <Field
-            id="unit"
-            editor="textbox"
-            placeholder="escreva a unidade"
-            name="unit"
-          />
-          <Field
-            id="role"
-            editor="dropdown"
-            placeholder="selecione a função"
-            name="role"
-            options={roles}
-          />
-          <button>
-            Atualizar
-          </button>
-        </Form>
-      </div>
+      </Table>
+
+      <Modal open={open} setOpen={setOpen}>
+        <div style={{ margin: 'auto' }}>
+          <button onClick={() => { setOpen(false); }}>Fechar</button>
+          <Form
+            ref={formRef}
+            onSubmit={handleSubmit}
+            initialData={isUnitUpdate}
+          >
+            <Field
+              id="initials"
+              editor="textbox"
+              name="initials"
+              placeholder="escreva a sigla"
+              type="text"
+            />
+            <Field
+              id="nome"
+              editor="textbox"
+              placeholder="escreva a unidade"
+              name="nome"
+              type="text"
+            />
+            <Field
+              id="funcao"
+              editor="dropdown"
+              name="funcao"
+              multiple
+              options={roles}
+            />
+            <button>
+              Atualizar
+            </button>
+          </Form>
+        </div>
+      </Modal>
     </>
   );
 };

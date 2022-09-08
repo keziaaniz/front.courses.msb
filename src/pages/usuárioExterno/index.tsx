@@ -2,7 +2,7 @@ import React from 'react';
 
 const ExternalUser = () => (
   <>
-    <h1>Usuário Externo</h1>
+    <h1>Home Usuário Externo</h1>
   </>
 );
 

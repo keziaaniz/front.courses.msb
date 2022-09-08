@@ -1,75 +1,52 @@
 import React from 'react';
-import styled from "styled-components";
 import {
   useHistory,
 } from "react-router-dom";
-
-const Button = styled.a`
-  color: #7374d2;
-  font-size: 1em;
-  margin: 1em;
-  padding: 0.25em 1em;
-  text-decoration: none;
-  &:hover {
-  color: #81bc85;
-  text-decoration: underline;
-}
-`;
-
-const Nav = styled.nav`
-width: 100%;
-height: 3rem;
-
-`;
+import { NaV, Button, ButtonDrop } from '../styles';
 
 const NavBar = () => {
   const history = useHistory();
 
   return (
-    <>
-      <div>
-        <nav className="perfis">
-          <div>
-            <h3>Área do</h3>
-            <Button onClick={() => history.push('formador')}>Formador|</Button>
-            <Button onClick={() => history.push('aluno')}>
-              Aluno
-            </Button>
-          </div>
-          <div>
-            <Button onClick={() => history.push('adm')}>
-              Administrador
-            </Button>
-          </div>
-        </nav>
-        <nav className="geral">
-          <div className="Courses">
+    <div className="nav-fill">
+      <NaV>
+        <ul className="navbar navbar-expand-lg">
+          <div className="collapse navbar-collapse">
+            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo03" aria-controls="navbarTogglerDemo03" aria-expanded="false" aria-label="Toggle navigation">
+              <span className="navbar-toggler-icon" />
+            </button>
             <li>
-              <Button onClick={() => history.push('courses')}>
+              <Button onClick={() => history.push('formador')} className=" nav-link">Formador</Button>
+            </li>
+            <li>
+
+              <Button onClick={() => history.push('aluno')} className="nav-link">Aluno</Button>
+            </li>
+            <li>
+              <Button onClick={() => history.push('adm')} className="nav-link">
+                Administrador
+              </Button>
+            </li>
+
+            <li className="dropdown">
+              <Button onClick={() => history.push('courses')} className="dropbtn">
                 Cursos
               </Button>
-              <ul className="dropdown-menu">
-                <li>
-                  <Button onClick={() => history.push('calendar')}>
-                    Calendário das aulas
-                  </Button>
-                </li>
-              </ul>
+              <div className="dropdown-content">
+                <ButtonDrop onClick={() => history.push('calendar')}>
+                  Calendário das aulas
+                </ButtonDrop>
+              </div>
+            </li>
+            <li>
+              <Button onClick={() => history.push('login')} className="nav-link">
+                Entre
+              </Button>
             </li>
           </div>
-          <div>
-            <Button onClick={() => history.push('login')}>
-              Entre
-            </Button>
-          </div>
-          <div>
-            <Button onClick={() => history.push('register')}>
-              Inscreva-se
-            </Button>
-          </div>
-        </nav>
-      </div>
-    </>
+        </ul>
+      </NaV>
+    </div>
   );
 };
 

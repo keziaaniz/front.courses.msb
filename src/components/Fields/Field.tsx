@@ -1,6 +1,16 @@
 import React, { useEffect, useRef } from "react";
 import { useField } from '@unform/core';
+import {
+  Input,
+} from 'reactstrap';
+import styled from "styled-components";
 import { cpf } from '../../utils/masks';
+
+const Select = styled.select`
+width: 100%;
+height: 1.2rem;
+margin-bottom: 5px;
+`;
 
 const Field = ({
   setValues, name, options, editor, ...rest
@@ -37,16 +47,19 @@ const Field = ({
       />
       )}
       {editor === "multilinetextbox" && (
-      <textarea
+      <Input
+        type="textarea"
         name={name}
         defaultValue={defaultValue}
         ref={inputRef}
         onChange={(e) => { inputRef.current.value = e.target.value; }}
+        {...rest}
       />
       )}
 
       {editor === "dropdown" && (
-      <select
+      <Select
+        type="select"
         defaultValue={defaultValue}
         name={name}
         ref={inputRef}
@@ -61,17 +74,30 @@ const Field = ({
                         {item.nome}
                       </option>
                     ))}
-      </select>
+      </Select>
 
       )}
-      {editor!.toLowerCase() === "password" && (
-      <input
+
+      {editor === "password" && (
+      <Input
+        name={name}
         defaultValue={defaultValue}
         type="password"
         ref={inputRef}
         onChange={(e) => { inputRef.current.value = e.target.value; }}
+        {...rest}
       />
-    )}
+      )}
+      {editor === "date" && (
+      <Input
+        name={name}
+        defaultValue={defaultValue}
+        type="date"
+        ref={inputRef}
+        onChange={(e) => { inputRef.current.value = e.target.value; }}
+        {...rest}
+      />
+      )}
     </div>
   );
 };

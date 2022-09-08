@@ -4,9 +4,9 @@ import React, {
 
 interface UnitProp {
   id: number;
-  unit: string;
+  nome: string;
   initials: string;
-  role?: string;
+  funcao?: string;
 }
 
 interface UnitData {
@@ -28,9 +28,11 @@ export const UnitProvider: React.FC<IProps> = ({ children }) => {
   const addUnit = useCallback((unit: UnitProp) => {
     setUnits([...units, unit]);
   }, [units]);
+
   const updateUnit = useCallback((unit: UnitProp) => {
     setUnits(units.map((item) => (item.id === unit.id ? unit : item)));
   }, [units]);
+
   const removeUnit = useCallback((id: number) => {
     setUnits(units.filter((item) => item.id !== id));
   }, [units]);

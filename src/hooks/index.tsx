@@ -1,5 +1,8 @@
 import React from 'react';
-
+import { UnitProvider } from './unit';
+import { RoleProvider } from './funcao';
+import { UserExtProvider } from './userext';
+import { ServerProvider } from './server';
 import { AuthProvider } from './auth';
 
 interface IProps {
@@ -8,7 +11,16 @@ interface IProps {
 
 const AppProvider: React.FC<IProps> = ({ children }) => (
   <AuthProvider>
-    {children}
+    <UserExtProvider>
+      <UnitProvider>
+        <RoleProvider>
+          <ServerProvider>
+            {children}
+          </ServerProvider>
+        </RoleProvider>
+      </UnitProvider>
+    </UserExtProvider>
+
   </AuthProvider>
 );
 

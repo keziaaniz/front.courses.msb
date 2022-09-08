@@ -4,23 +4,25 @@ import React, {
 
 import api from '../services/api';
 
-interface User {
+interface IUser {
   id: number;
   name: string;
+  email: string;
+  password: string;
 }
 
 interface AuthState {
   token: string;
-  user: User;
+  user: IUser;
 }
 
 interface SignInCredentials{
-  cpf: string;
+  email: string;
   password: string;
 }
 
 interface AuthContextData {
-  user: User;
+  user: IUser;
   loading: boolean;
   // eslint-disable-next-line no-unused-vars
   signIn(credentias: SignInCredentials): Promise<void>;
@@ -52,24 +54,34 @@ export const AuthProvider: React.FC<IProps> = ({ children }) => {
     [data],
   );
 
-  const signIn = useCallback(async ({ cpf, password }: SignInCredentials) => {
+  const signIn = useCallback(async ({ email, password }: SignInCredentials) => {
     try {
       setLoading(true);
 
-      const response = await api.post(`login`, {
-        cpf,
+      const csrf = await api.get('/sanctum/csrf-cookie');
+      console.log('csrf = ', csrf);
+
+      const login = await api.post('/api/login', {
+        email,
         password,
       });
+      console.log(login);
+      // const token = Date.now().toString();
 
-      const { auth, user } = response.data;
+      // const user = {
+      // id: Date.now(),
+      // name: new Date().toISOString(),
+      // email,
+      // password,
+      // };
 
-      localStorage.setItem('@project:token', auth.token);
-      localStorage.setItem('@project:user', JSON.stringify(user));
+      localStorage.setItem('@project:token', login.data.token);
+      localStorage.setItem('@project:user', JSON.stringify(login.data.user));
 
-      // @ts-ignore
-      api.defaults.headers.authorization = `Bearer ${auth.token}`;
-
-      setData({ token: auth.token, user });
+      setData({
+        token: login.data.token,
+        user: login.data.user,
+      });
 
       window.location.href = '/home';
     } catch (error) {
